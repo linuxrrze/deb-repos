@@ -1,5 +1,5 @@
 [Unit]
-Description=Check for new storytold releases every hour
+Description=Check for new %i releases every hour
 
 [Timer]
 OnBootSec=5min

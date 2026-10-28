@@ -1,0 +1,25 @@
+[Unit]
+Description=Mirror GitHub .deb releases into the APT repository %i
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=aptmirror
+Group=aptmirror
+# SIGNING_KEY=<fingerprint> and MIRROR_ARGS (which releases, e.g.
+# "--org storytold --arch amd64 arm64 riscv64"); optional: GITHUB_TOKEN=...
+# (no scopes needed) raises the API limit to 5000 req/h
+EnvironmentFile=/etc/default/github-apt-mirror-%i
+Environment=GNUPGHOME=/var/lib/aptmirror/gnupg
+ExecStart=/usr/local/bin/github-apt-mirror.py \
+    --out /srv/apt/%i \
+    --state /var/lib/aptmirror/%i \
+    --gpg-key ${SIGNING_KEY} \
+    $MIRROR_ARGS
+Nice=10
+IOSchedulingClass=idle
+ProtectSystem=strict
+ReadWritePaths=/srv/apt/%i /var/lib/aptmirror
+PrivateTmp=yes
+NoNewPrivileges=yes

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Mirror the .deb release assets of github.com/storytold into a signed APT repository.
+"""Mirror the .deb release assets of a GitHub org (or some of its repos) into a signed
+APT repository.
 
 Layout written under --out (serve it as static files):
 
-    pool/main/<p>/<package>/<file>.deb
+    pool/main/<p>/<repo>/<file>.deb
     dists/<suite>/InRelease, Release, Release.gpg
     dists/<suite>/main/binary-<arch>/Packages{,.gz}
-    storytold-archive-keyring.{asc,gpg}
+    <name>-archive-keyring.{asc,gpg}
 
 With --remote-debs the .debs aren't stored: each one is downloaded once to build its
 index entry, and clients fetch it from its GitHub release via apt's mirror+ method
@@ -63,13 +64,20 @@ def org_repos(org, max_age_days):
     return repos
 
 
-def latest_release(org, repo):
-    try:
-        return gh(f"/repos/{org}/{repo}/releases/latest")  # excludes drafts and prereleases
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return None
-        raise
+def stable_releases(org, repo, count):
+    """The newest `count` releases, without drafts and prereleases (newest first)."""
+    if count == 1:
+        try:
+            return [gh(f"/repos/{org}/{repo}/releases/latest")]  # excludes drafts and prereleases
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return []
+            raise
+    rels, page = [], 1
+    while len(rels) < count and (batch := gh(f"/repos/{org}/{repo}/releases?per_page=100&page={page}")):
+        rels += [r for r in batch if not r["draft"] and not r["prerelease"]]
+        page += 1
+    return rels[:count]
 
 
 def sha256_file(path, algo="sha256"):
@@ -151,7 +159,13 @@ class Mirror:
     # -- fetching ---------------------------------------------------------
 
     def sync(self):
-        repos = self.a.repos or org_repos(self.a.org, self.a.max_age_days)
+        try:
+            repos = self.a.repos or org_repos(self.a.org, self.a.max_age_days)
+        except (OSError, ValueError) as e:
+            # Still publish the versions indexed before
+            log(f"error {self.a.org}: {e}")
+            self.failed = True
+            return
         skipped = set()
         for repo in repos:
             # One failing repo or asset doesn't stop the others; run() reports it
@@ -163,18 +177,28 @@ class Mirror:
         self.skipped = skipped
 
     def sync_repo(self, repo, skipped):
-        rel = latest_release(self.a.org, repo)
-        if not rel:
-            return
-        debs = [x for x in rel["assets"] if x["name"].endswith(".deb")]
+        for rel in stable_releases(self.a.org, repo, self.a.releases):
+            self.sync_release(repo, rel, skipped)
+
+    def sync_release(self, repo, rel, skipped):
+        # Longest name first: some releases attach the same .deb a second time under a
+        # name without version (e.g. app-linux-x86_64.deb), only the first one is indexed
+        debs = sorted((x for x in rel["assets"] if x["name"].endswith(".deb")),
+                      key=lambda x: (-len(x["name"]), x["name"]))
         if not debs:
             return
         sums = None
+        seen = set()
         for asset in debs:
             m = re.search(r"-linux-([a-z0-9_]+)\.deb$", asset["name"])
             arch = ASSET_ARCH.get(m.group(1), m.group(1)) if m else None
             if self.a.arch and arch not in self.a.arch:
                 continue
+            digest = (asset.get("digest") or "").removeprefix("sha256:") or None
+            if digest:  # without one, a duplicate is only dropped by prune()
+                if digest in seen:
+                    continue
+                seen.add(digest)
             url = asset["browser_download_url"]
             if self.remote:
                 path = url.removeprefix(DEB_HOST)
@@ -188,7 +212,7 @@ class Mirror:
                 dest = pkgdir / asset["name"]
                 if dest.exists():
                     continue
-            expected = (asset.get("digest") or "").removeprefix("sha256:") or None
+            expected = digest
             if not expected:
                 if sums is None:
                     sums = checksums_from_sumsfile(rel["assets"])
@@ -233,13 +257,20 @@ class Mirror:
 
     def prune(self, entries):
         """Keep only the newest --keep versions per (package, architecture), and only --arch."""
-        groups = {}
+        groups, versions = {}, set()
         for rel, c in entries:
             k = (control_field(c["control"], "Package"), control_field(c["control"], "Architecture"))
             if self.a.arch and k[1] not in self.a.arch and k[1] != "all":
                 log(f"prune {rel} (architecture {k[1]} not selected)")
                 self.drop(rel)
                 continue
+            # The same package version under a second file name (see sync_release)
+            v = (*k, control_field(c["control"], "Version"))
+            if v in versions:
+                log(f"prune {rel} (duplicate of {' '.join(v)})")
+                self.drop(rel)
+                continue
+            versions.add(v)
             groups.setdefault(k, []).append((rel, c))
         kept = []
         for items in groups.values():
@@ -317,7 +348,7 @@ class Mirror:
             for ext, extra in ((".asc", ["--armor"]), (".gpg", [])):
                 key = subprocess.run(["gpg", "--batch", "--export", *extra, self.a.gpg_key],
                                      check=True, capture_output=True).stdout
-                (self.out / f"storytold-archive-keyring{ext}").write_bytes(key)
+                (self.out / f"{self.a.name}-archive-keyring{ext}").write_bytes(key)
         else:
             log("warning: --gpg-key not set, repository is unsigned")
 
@@ -354,14 +385,17 @@ class Mirror:
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", required=True, help="repository root served by the web server")
-    p.add_argument("--org", default="storytold")
+    p.add_argument("--org", required=True, help="GitHub organization or user, e.g. storytold")
     p.add_argument("--repos", nargs="*", help="only these repos (default: every repo whose latest release has .debs)")
+    p.add_argument("--releases", type=int, default=1,
+                   help="look at the newest N stable releases of each repo (default 1, the latest)")
+    p.add_argument("--name", help="name of the keyring file <name>-archive-keyring.{asc,gpg} (default: --org)")
     p.add_argument("--max-age-days", type=int, default=365,
                    help="when discovering, skip repos not pushed to for this many days (default 365)")
     p.add_argument("--arch", nargs="+", choices=sorted(ASSET_ARCH.values()),
                    help="only these Debian architectures; others are removed from the pool (default: all)")
     p.add_argument("--suite", default="stable")
-    p.add_argument("--origin", default="storytold-mirror")
+    p.add_argument("--origin", help="Origin/Label of the Release file (default: <name>-mirror)")
     p.add_argument("--keep", type=int, default=2, help="versions to keep per package and arch (default 2)")
     p.add_argument("--gpg-key", help="key ID/fingerprint used to sign the Release file")
     p.add_argument("--no-fetch", action="store_true", help="only rebuild the indexes from the pool")
@@ -369,7 +403,12 @@ def main():
     p.add_argument("--remote-debs", metavar="URL",
                    help="don't store .debs, send clients to GitHub for them; URL is where --out is served")
     p.add_argument("--state", help="directory for the package metadata (default: OUT/.state)")
-    sys.exit(Mirror(p.parse_args()).run())
+    args = p.parse_args()
+    if args.releases > args.keep:
+        p.error("--releases must not exceed --keep, pruned versions would be fetched again on every run")
+    args.name = args.name or args.org
+    args.origin = args.origin or f"{args.name}-mirror"
+    sys.exit(Mirror(args).run())
 
 
 if __name__ == "__main__":

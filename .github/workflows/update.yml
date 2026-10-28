@@ -1,0 +1,159 @@
+name: Update repositories
+
+# Adds new releases to the three APT repositories, then rebuilds, signs and
+# publishes their indexes to GitHub Pages, one directory each:
+#
+#   zoom/        Zoom client, .debs served from cdn.zoom.us
+#   storytold/   storytold "Craft" apps, .debs served from their GitHub releases
+#   solidcraft/  SolidCraft, .debs served from its GitHub releases
+#
+# Only the index entries are committed back to this repository (zoom/versions.txt,
+# zoom/stanzas/, */state/debs.json), the .deb files are never stored.
+
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'github-apt-mirror.py'
+      - 'storytold/state/debs.json'
+      - 'solidcraft/state/debs.json'
+      - 'zoom/versions.txt'
+      - 'zoom/versions-skipped.txt'
+      - 'zoom/stanzas/**'
+      - 'zoom/scripts/**'
+      - '.github/workflows/update.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: repo-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Import repository signing key
+        env:
+          REPO_GPG_PRIVATE_KEY: ${{ secrets.REPO_GPG_PRIVATE_KEY }}
+        run: |
+          if [ -z "$REPO_GPG_PRIVATE_KEY" ]; then
+            echo "::error::Secret REPO_GPG_PRIVATE_KEY is not set"
+            exit 1
+          fi
+          echo "$REPO_GPG_PRIVATE_KEY" | gpg --batch --import
+          KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/ {print $10; exit}')
+          echo "KEY_ID=$KEY_ID" >> "$GITHUB_ENV"
+          mkdir -p public
+          gpg --batch --armor --export "$KEY_ID" > public/deb-repos.asc
+
+      - id: pages
+        uses: actions/configure-pages@v6
+
+      # Each repository is updated on its own: on failure the others (and what
+      # could be added) are still published, the last step fails the run.
+
+      - id: zoom
+        name: 'zoom: add new versions'
+        run: |
+          result=0
+          touch "$RUNNER_TEMP/zoom-added"
+          ADDED_FILE="$RUNNER_TEMP/zoom-added" zoom/scripts/add-new-versions.sh || result=$?
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+          added=$(sort -V "$RUNNER_TEMP/zoom-added" | paste -sd ' ')
+          [ -z "$added" ] || echo "zoom $added" >> "$RUNNER_TEMP/added"
+          zoom/scripts/build-index.sh public/zoom "${{ steps.pages.outputs.base_url }}/zoom/" "$KEY_ID"
+
+      - id: storytold
+        name: 'storytold: index new releases'
+        run: |
+          result=0
+          ./github-apt-mirror.py --org storytold --keep 5 \
+              --out public/storytold --state storytold/state \
+              --remote-debs "${{ steps.pages.outputs.base_url }}/storytold/" --gpg-key "$KEY_ID" \
+              2> >(tee "$RUNNER_TEMP/storytold.log" >&2) || result=$?
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+          awk '/^fetch / {print $2, $3}' "$RUNNER_TEMP/storytold.log" | sort -u >> "$RUNNER_TEMP/added"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - id: solidcraft
+        name: 'solidcraft: index new releases'
+        run: |
+          # Several releases a day: look at the newest 10, so none is missed between runs
+          result=0
+          ./github-apt-mirror.py --org tangency-labs --repos solidcraft --name solidcraft \
+              --releases 10 --keep 10 \
+              --out public/solidcraft --state solidcraft/state \
+              --remote-debs "${{ steps.pages.outputs.base_url }}/solidcraft/" --gpg-key "$KEY_ID" \
+              2> >(tee "$RUNNER_TEMP/solidcraft.log" >&2) || result=$?
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+          awk '/^fetch / {print $2, $3}' "$RUNNER_TEMP/solidcraft.log" | sort -u >> "$RUNNER_TEMP/added"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Commit the new index entries
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add zoom/versions.txt zoom/stanzas/ storytold/state/debs.json solidcraft/state/debs.json
+          if ! git diff --cached --quiet; then
+            added=$(paste -sd, "$RUNNER_TEMP/added" | sed 's/,/, /g')
+            if [ -n "$added" ]; then
+              git commit -m "Add $added"
+            else
+              git commit -m "Remove old versions from the package indexes"
+            fi
+            git push
+          elif [ "$(git log -1 --format=%ct)" -lt "$(date -d '50 days ago' +%s)" ]; then
+            # GitHub disables scheduled workflows after 60 days without repository activity
+            git commit --allow-empty -m "Keepalive: no new release for 50 days"
+            git push
+          else
+            echo "Nothing new"
+          fi
+
+      # Never replace the published repositories with incomplete ones
+      - id: complete
+        run: |
+          for repo in zoom storytold solidcraft; do
+            if [ ! -f "public/$repo/dists/stable/InRelease" ]; then
+              echo "::error::public/$repo has no signed index, not deploying"
+              exit 1
+            fi
+          done
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+      - id: deploy
+        uses: actions/deploy-pages@v5
+
+      - name: Report failures
+        if: steps.zoom.outputs.result != '0' || steps.storytold.outputs.result != '0' || steps.solidcraft.outputs.result != '0'
+        run: |
+          case "${{ steps.zoom.outputs.result }}" in
+            0) ;;
+            1) echo "::error::Zoom's latest version couldn't be verified or downloaded, see the 'zoom' step" ;;
+            2) echo "::error::Zoom's latest version couldn't be determined (zoom.us unreachable?)" ;;
+            *) echo "::error::Adding new Zoom versions failed, see the 'zoom' step" ;;
+          esac
+          if [ "${{ steps.storytold.outputs.result }}" != 0 ]; then
+            echo "::error::Some storytold releases couldn't be indexed, see the lines starting with 'error' in the 'storytold' step"
+          fi
+          if [ "${{ steps.solidcraft.outputs.result }}" != 0 ]; then
+            echo "::error::Some solidcraft releases couldn't be indexed, see the lines starting with 'error' in the 'solidcraft' step"
+          fi
+          exit 1

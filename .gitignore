@@ -1,4 +1,7 @@
 __pycache__/
+*.deb
+.idea
+gpg/
 # Only the package index is committed, the rest is per run
-state/*
-!state/debs.json
+*/state/*
+!*/state/debs.json
