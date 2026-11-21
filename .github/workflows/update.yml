@@ -1,11 +1,12 @@
 name: Update repositories
 
-# Adds new releases to the three APT repositories, then rebuilds, signs and
+# Adds new releases to the four APT repositories, then rebuilds, signs and
 # publishes their indexes to GitHub Pages, one directory each:
 #
 #   zoom/        Zoom client, .debs served from cdn.zoom.us
 #   storytold/   storytold "Craft" apps, .debs served from their GitHub releases
 #   solidcraft/  SolidCraft, .debs served from its GitHub releases
+#   lookout/     Lookout, .debs served from its GitHub releases
 #
 # Only the index entries are committed back to this repository (zoom/versions.txt,
 # zoom/stanzas/, */state/debs.json), the .deb files are never stored.
@@ -20,6 +21,7 @@ on:
       - 'github-apt-mirror.py'
       - 'storytold/state/debs.json'
       - 'solidcraft/state/debs.json'
+      - 'lookout/state/debs.json'
       - 'zoom/versions.txt'
       - 'zoom/versions-skipped.txt'
       - 'zoom/stanzas/**'
@@ -103,11 +105,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      - id: lookout
+        name: 'lookout: index new releases'
+        run: |
+          # Sometimes several releases a day: look at the newest 5
+          result=0
+          ./github-apt-mirror.py --org Dethon --repos lookout --name lookout \
+              --releases 5 --keep 5 \
+              --out public/lookout --state lookout/state \
+              --remote-debs "${{ steps.pages.outputs.base_url }}/lookout/" --gpg-key "$KEY_ID" \
+              2> >(tee "$RUNNER_TEMP/lookout.log" >&2) || result=$?
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+          awk '/^fetch / {print $2, $3}' "$RUNNER_TEMP/lookout.log" | sort -u >> "$RUNNER_TEMP/added"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Commit the new index entries
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add zoom/versions.txt zoom/stanzas/ storytold/state/debs.json solidcraft/state/debs.json
+          git add zoom/versions.txt zoom/stanzas/ storytold/state/debs.json solidcraft/state/debs.json \
+            lookout/state/debs.json
           if ! git diff --cached --quiet; then
             added=$(paste -sd, "$RUNNER_TEMP/added" | sed 's/,/, /g')
             if [ -n "$added" ]; then
@@ -127,7 +145,7 @@ jobs:
       # Never replace the published repositories with incomplete ones
       - id: complete
         run: |
-          for repo in zoom storytold solidcraft; do
+          for repo in zoom storytold solidcraft lookout; do
             if [ ! -f "public/$repo/dists/stable/InRelease" ]; then
               echo "::error::public/$repo has no signed index, not deploying"
               exit 1
@@ -142,7 +160,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
       - name: Report failures
-        if: steps.zoom.outputs.result != '0' || steps.storytold.outputs.result != '0' || steps.solidcraft.outputs.result != '0'
+        if: steps.zoom.outputs.result != '0' || steps.storytold.outputs.result != '0' || steps.solidcraft.outputs.result != '0' || steps.lookout.outputs.result != '0'
         run: |
           case "${{ steps.zoom.outputs.result }}" in
             0) ;;
@@ -155,5 +173,8 @@ jobs:
           fi
           if [ "${{ steps.solidcraft.outputs.result }}" != 0 ]; then
             echo "::error::Some solidcraft releases couldn't be indexed, see the lines starting with 'error' in the 'solidcraft' step"
+          fi
+          if [ "${{ steps.lookout.outputs.result }}" != 0 ]; then
+            echo "::error::Some lookout releases couldn't be indexed, see the lines starting with 'error' in the 'lookout' step"
           fi
           exit 1

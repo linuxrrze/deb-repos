@@ -190,7 +190,9 @@ class Mirror:
         sums = None
         seen = set()
         for asset in debs:
-            m = re.search(r"-linux-([a-z0-9_]+)\.deb$", asset["name"])
+            # app-1.0-linux-x86_64.deb, or Debian style app_1.0_amd64.deb
+            m = (re.search(r"-linux-([a-z0-9_]+)\.deb$", asset["name"])
+                 or re.search(r"_([a-z0-9_]+)\.deb$", asset["name"]))
             arch = ASSET_ARCH.get(m.group(1), m.group(1)) if m else None
             if self.a.arch and arch not in self.a.arch:
                 continue

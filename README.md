@@ -7,10 +7,11 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | `zoom`       | the [Zoom](https://zoom.us) desktop client (`zoom`)          | amd64                  | `cdn.zoom.us`          |
 | `storytold`  | the [storytold](https://github.com/storytold) "Craft" apps (`photocraft`, `filmcraft`, `wordcraft`, …) | amd64, arm64, riscv64 | their GitHub releases |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
+| `lookout`    | [Lookout](https://github.com/Dethon/lookout), a light Outlook.com / Microsoft 365 mail client (`lookout`) | amd64 | its GitHub releases |
 
 GitHub Actions builds the signed indexes and publishes them on GitHub Pages, one directory per repository.
 The `.deb` files are **not** copied: apt downloads them directly from where the vendor publishes them.
-All three repositories are signed with the same key.
+All repositories are signed with the same key.
 
 # Installation
 
@@ -23,7 +24,7 @@ sudo curl -fsSLo /etc/apt/keyrings/deb-repos.asc https://linuxrrze.github.io/deb
 
 Check the key before trusting it: `gpg --show-keys /etc/apt/keyrings/deb-repos.asc`.
 
-Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold` or `solidcraft`:
+Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold`, `solidcraft` or `lookout`:
 
 ```sh
 sudo tee /etc/apt/sources.list.d/<repo>.sources <<EOF
@@ -43,11 +44,12 @@ sudo apt update
 sudo apt install zoom                                # zoom
 sudo apt install photocraft filmcraft wordcraft      # storytold; `apt search craft` lists them all
 sudo apt install solidcraft                          # solidcraft
+sudo apt install lookout                             # lookout
 ```
 
 A package that was installed by hand from a downloaded `.deb` has the same name, so `apt upgrade` (or
 unattended-upgrades) now keeps it up to date. The Origins for unattended-upgrades are `zoom-ubuntu-repo`,
-`storytold-mirror` and `solidcraft-mirror`.
+`storytold-mirror`, `solidcraft-mirror` and `lookout-mirror`.
 
 ## Older versions
 
@@ -62,6 +64,7 @@ sudo apt-mark hold solidcraft            # keep it from being upgraded (undo wit
 - `zoom`: the 10 newest Zoom versions when the repository started, plus every release since.
 - `storytold`: the last 5 versions of each app.
 - `solidcraft`: the last 10 versions.
+- `lookout`: the last 5 versions.
 
 ## Removal
 
@@ -79,7 +82,8 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
   zoom/  stanzas, versions.txt  ──▶  zoom/scripts/add-new-versions.sh ──▶   deb-repos.asc
   storytold/state/debs.json          github-apt-mirror.py (storytold)       zoom/        mirrors.txt, dists/stable/...
   solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      storytold/   mirrors.txt, dists/stable/...
-                               ◀──   commit new index entries              solidcraft/  mirrors.txt, dists/stable/...
+  lookout/state/debs.json            github-apt-mirror.py (lookout)         solidcraft/  mirrors.txt, dists/stable/...
+                               ◀──   commit new index entries              lookout/     mirrors.txt, dists/stable/...
 ```
 
 - Each `mirrors.txt` is a list for apt's `mirror+` method: index files are fetched from GitHub Pages
@@ -92,7 +96,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
   signature (see [zoom/README.md](zoom/README.md)), packages from GitHub releases against the SHA-256 the
   release publishes (GitHub's asset digest, or `SHA256SUMS.txt`). The `.deb` itself isn't stored, only its index
   entry, which is committed to this repository.
-- `.github/workflows/update.yml` runs every 3 hours (and on pushes). It adds new versions to the three
+- `.github/workflows/update.yml` runs every 3 hours (and on pushes). It adds new versions to the
   repositories one after the other, commits their index entries, then signs and deploys all indexes.
   If one repository or release fails, everything else is still published and the run is marked as failed;
   the next run retries. Nothing is deployed if one of the repositories has no index at all.
@@ -101,7 +105,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 
 ## GitHub releases: `github-apt-mirror.py`
 
-`storytold` and `solidcraft` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
+`storytold`, `solidcraft` and `lookout` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
 
 1. looks at the **latest stable release** (or the newest `--releases N`) of every non-archived repo, pushed to
    within the last year, that has `.deb` assets (prereleases and drafts are ignored),
@@ -110,11 +114,13 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 3. keeps the newest `--keep` versions per package and architecture,
 4. writes `Packages`/`Release` indexes, signs them with your GPG key and swaps them into place.
 
-The release file names map `x86_64` → `amd64`, `aarch64` → `arm64` and `riscv64` → `riscv64`.
+The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<arch>.deb`) map `x86_64` →
+`amd64`, `aarch64` → `arm64` and `riscv64` → `riscv64`.
 
 `storytold` is indexed with `--org storytold`, which finds all of its apps, `solidcraft` with
 `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
-only looking at the latest one every 3 hours could miss some.
+only looking at the latest one every 3 hours could miss some. `lookout` uses
+`--org Dethon --repos lookout --releases 5 --keep 5` for the same reason.
 
 To add another project that publishes `.deb` files with its GitHub releases, add a step like the `solidcraft`
 one to the workflow, its `<name>/state/debs.json` to the `git add` line and the path triggers, and the name to
