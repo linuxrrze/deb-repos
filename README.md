@@ -7,7 +7,7 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | `zoom`       | the [Zoom](https://zoom.us) desktop client (`zoom`)          | amd64                  | `cdn.zoom.us`          |
 | `storytold`  | the [storytold](https://github.com/storytold) "Craft" apps (`photocraft`, `filmcraft`, `wordcraft`, …) | amd64, arm64, riscv64 | their GitHub releases |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
-| `lookout`    | [Lookout](https://github.com/Dethon/lookout), a light Outlook.com / Microsoft 365 mail client (`lookout`) | amd64 | its GitHub releases |
+| `lookout`    | [Lookout](https://github.com/gavindi/lookout), a GNOME mail, calendar and contacts client (`lookout`) | amd64 | its GitHub releases |
 
 GitHub Actions builds the signed indexes and publishes them on GitHub Pages, one directory per repository.
 The `.deb` files are **not** copied: apt downloads them directly from where the vendor publishes them.
@@ -120,7 +120,7 @@ The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<ar
 `storytold` is indexed with `--org storytold`, which finds all of its apps, `solidcraft` with
 `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
 only looking at the latest one every 3 hours could miss some. `lookout` uses
-`--org Dethon --repos lookout --releases 5 --keep 5` for the same reason.
+`--org gavindi --repos lookout --releases 5 --keep 5`.
 
 To add another project that publishes `.deb` files with its GitHub releases, add a step like the `solidcraft`
 one to the workflow, its `<name>/state/debs.json` to the `git add` line and the path triggers, and the name to
@@ -256,6 +256,7 @@ See [zoom/README.md](zoom/README.md#self-hosted-repository).
   repository.
 - The storytold and SolidCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
   Ubuntu 22.04 / Debian 12 or newer). On older systems apt will refuse to install them.
+- Lookout needs GTK 4.14, libadwaita 1.5 and WebKitGTK 6.0, i.e. Ubuntu 24.04 / Debian 13 or newer.
 - A newer version that is still marked as a prerelease on GitHub (e.g. SolidCraft's nightlies) isn't picked up.
 - If a release or asset is deleted upstream, its version stays in the index until it's pruned, but can't be
   installed anymore.

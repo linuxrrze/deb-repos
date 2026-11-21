@@ -108,9 +108,9 @@ jobs:
       - id: lookout
         name: 'lookout: index new releases'
         run: |
-          # Sometimes several releases a day: look at the newest 5
+          # Look at the newest 5 releases, in case several come out between runs
           result=0
-          ./github-apt-mirror.py --org Dethon --repos lookout --name lookout \
+          ./github-apt-mirror.py --org gavindi --repos lookout --name lookout \
               --releases 5 --keep 5 \
               --out public/lookout --state lookout/state \
               --remote-debs "${{ steps.pages.outputs.base_url }}/lookout/" --gpg-key "$KEY_ID" \
