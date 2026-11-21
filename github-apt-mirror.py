@@ -387,7 +387,7 @@ class Mirror:
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", required=True, help="repository root served by the web server")
-    p.add_argument("--org", required=True, help="GitHub organization or user, e.g. storytold")
+    p.add_argument("--org", required=True, help="GitHub organization or user, e.g. tangency-labs")
     p.add_argument("--repos", nargs="*", help="only these repos (default: every repo whose latest release has .debs)")
     p.add_argument("--releases", type=int, default=1,
                    help="look at the newest N stable releases of each repo (default 1, the latest)")

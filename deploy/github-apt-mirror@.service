@@ -8,7 +8,7 @@ Type=oneshot
 User=aptmirror
 Group=aptmirror
 # SIGNING_KEY=<fingerprint> and MIRROR_ARGS (which releases, e.g.
-# "--org storytold --arch amd64 arm64 riscv64"); optional: GITHUB_TOKEN=...
+# "--org tangency-labs --repos solidcraft --arch amd64 arm64"); optional: GITHUB_TOKEN=...
 # (no scopes needed) raises the API limit to 5000 req/h
 EnvironmentFile=/etc/default/github-apt-mirror-%i
 Environment=GNUPGHOME=/var/lib/aptmirror/gnupg

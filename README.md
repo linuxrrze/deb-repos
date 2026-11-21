@@ -5,13 +5,26 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | Repository   | Packages                                                     | Architectures          | .deb files served from |
 |--------------|--------------------------------------------------------------|------------------------|------------------------|
 | `zoom`       | the [Zoom](https://zoom.us) desktop client (`zoom`)          | amd64                  | `cdn.zoom.us`          |
-| `storytold`  | the [storytold](https://github.com/storytold) "Craft" apps (`photocraft`, `filmcraft`, `wordcraft`, …) | amd64, arm64, riscv64 | their GitHub releases |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
 | `lookout`    | [Lookout](https://github.com/gavindi/lookout), a GNOME mail, calendar and contacts client (`lookout`) | amd64 | its GitHub releases |
 
 GitHub Actions builds the signed indexes and publishes them on GitHub Pages, one directory per repository.
 The `.deb` files are **not** copied: apt downloads them directly from where the vendor publishes them.
 All repositories are signed with the same key.
+
+The storytold / ArtCraft "Craft" apps used to be mirrored here as `storytold`. They have an official APT
+repository with the same packages (amd64, arm64, riscv64), see <https://getartcraft.com/linux>. If you used
+`storytold` from here, switch to it:
+
+```sh
+sudo rm /etc/apt/sources.list.d/storytold.sources
+sudo curl -fsSLo /etc/apt/keyrings/artcraft.gpg https://getartcraft.com/keys/artcraft.gpg
+sudo chmod 644 /etc/apt/keyrings/artcraft.gpg
+sudo curl -fsSLo /etc/apt/sources.list.d/artcraft.sources https://getartcraft.com/apt/artcraft.sources
+sudo apt update
+```
+
+ArtCraft Studio is called `artcraft` there (it was `art-craft` here); the other packages keep their names.
 
 # Installation
 
@@ -24,7 +37,7 @@ sudo curl -fsSLo /etc/apt/keyrings/deb-repos.asc https://linuxrrze.github.io/deb
 
 Check the key before trusting it: `gpg --show-keys /etc/apt/keyrings/deb-repos.asc`.
 
-Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold`, `solidcraft` or `lookout`:
+Then add the repositories you want. For each, replace `<repo>` with `zoom`, `solidcraft` or `lookout`:
 
 ```sh
 sudo tee /etc/apt/sources.list.d/<repo>.sources <<EOF
@@ -42,14 +55,13 @@ and install:
 ```sh
 sudo apt update
 sudo apt install zoom                                # zoom
-sudo apt install photocraft filmcraft wordcraft      # storytold; `apt search craft` lists them all
 sudo apt install solidcraft                          # solidcraft
 sudo apt install lookout                             # lookout
 ```
 
 A package that was installed by hand from a downloaded `.deb` has the same name, so `apt upgrade` (or
 unattended-upgrades) now keeps it up to date. The Origins for unattended-upgrades are `zoom-ubuntu-repo`,
-`storytold-mirror`, `solidcraft-mirror` and `lookout-mirror`.
+`solidcraft-mirror` and `lookout-mirror`.
 
 ## Older versions
 
@@ -62,7 +74,6 @@ sudo apt-mark hold solidcraft            # keep it from being upgraded (undo wit
 ```
 
 - `zoom`: the 10 newest Zoom versions when the repository started, plus every release since.
-- `storytold`: the last 5 versions of each app.
 - `solidcraft`: the last 10 versions.
 - `lookout`: the last 5 versions.
 
@@ -80,8 +91,7 @@ sudo apt update
 ```
 github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub Pages: linuxrrze.github.io/deb-repos/
   zoom/  stanzas, versions.txt  ──▶  zoom/scripts/add-new-versions.sh ──▶   deb-repos.asc
-  storytold/state/debs.json          github-apt-mirror.py (storytold)       zoom/        mirrors.txt, dists/stable/...
-  solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      storytold/   mirrors.txt, dists/stable/...
+  solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      zoom/        mirrors.txt, dists/stable/...
   lookout/state/debs.json            github-apt-mirror.py (lookout)         solidcraft/  mirrors.txt, dists/stable/...
                                ◀──   commit new index entries              lookout/     mirrors.txt, dists/stable/...
 ```
@@ -105,7 +115,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 
 ## GitHub releases: `github-apt-mirror.py`
 
-`storytold`, `solidcraft` and `lookout` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
+`solidcraft` and `lookout` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
 
 1. looks at the **latest stable release** (or the newest `--releases N`) of every non-archived repo, pushed to
    within the last year, that has `.deb` assets (prereleases and drafts are ignored),
@@ -117,8 +127,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<arch>.deb`) map `x86_64` →
 `amd64`, `aarch64` → `arm64` and `riscv64` → `riscv64`.
 
-`storytold` is indexed with `--org storytold`, which finds all of its apps, `solidcraft` with
-`--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
+`solidcraft` is indexed with `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
 only looking at the latest one every 3 hours could miss some. `lookout` uses
 `--org gavindi --repos lookout --releases 5 --keep 5`.
 
@@ -170,7 +179,7 @@ scripts, see [zoom/README.md](zoom/README.md).
 3. Store the content of `$GNUPGHOME/private.asc` as Actions secret `REPO_GPG_PRIVATE_KEY`
    (Settings → Secrets and variables → Actions). Keep an offline backup, then `rm -rf "$GNUPGHOME"`.
 4. Run the "Update repositories" workflow (Actions tab). The first run indexes the newest releases, which
-   downloads each `.deb` once (several GB). It publishes to `https://<user>.github.io/<repository>/`.
+   downloads each `.deb` once. It publishes to `https://<user>.github.io/<repository>/`.
 5. Replace `linuxrrze.github.io/deb-repos` in this README with your own URL, and add your key's fingerprint
    to the installation instructions.
 
@@ -197,10 +206,10 @@ FPR=$(sudo -u aptmirror env GNUPGHOME=/var/lib/aptmirror/gnupg \
   gpg --list-keys --with-colons | awk -F: '/^fpr/{print $10; exit}')
 
 # One settings file per repository
-sudo install -d -o aptmirror -g aptmirror /srv/apt/storytold /srv/apt/solidcraft
-sudo tee /etc/default/github-apt-mirror-storytold <<EOF
+sudo install -d -o aptmirror -g aptmirror /srv/apt/solidcraft /srv/apt/lookout
+sudo tee /etc/default/github-apt-mirror-lookout <<EOF
 SIGNING_KEY=$FPR
-MIRROR_ARGS=--org storytold --arch amd64 arm64 riscv64 --keep 2
+MIRROR_ARGS=--org gavindi --repos lookout --name lookout --arch amd64 --keep 2
 #GITHUB_TOKEN=github_pat_...
 EOF
 sudo tee /etc/default/github-apt-mirror-solidcraft <<EOF
@@ -212,38 +221,38 @@ sudo chmod 600 /etc/default/github-apt-mirror-*
 
 sudo cp deploy/github-apt-mirror@.{service,timer} /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl start github-apt-mirror@storytold.service    # first sync, can take a while
-journalctl -u github-apt-mirror@storytold -e
-sudo systemctl enable --now github-apt-mirror@storytold.timer github-apt-mirror@solidcraft.timer  # hourly
+sudo systemctl start github-apt-mirror@solidcraft.service   # first sync, can take a while
+journalctl -u github-apt-mirror@solidcraft -e
+sudo systemctl enable --now github-apt-mirror@solidcraft.timer github-apt-mirror@lookout.timer  # hourly
 
 sudo cp deploy/nginx-apt.conf /etc/nginx/sites-available/apt   # edit server_name / TLS
 sudo ln -s ../sites-available/apt /etc/nginx/sites-enabled/ && sudo systemctl reload nginx
 ```
 
-Without a `GITHUB_TOKEN`, GitHub allows 60 API requests per hour. A storytold run uses one request for the
-repo list plus one per recently active repo (about 30 today), so an hourly run fits for now. If you sync more
-repositories or more often, create a fine-grained token with no permissions and add it as shown above.
+Without a `GITHUB_TOKEN`, GitHub allows 60 API requests per hour. A run with `--repos` uses one request per
+repo, without it one for the repo list plus one per recently active repo, so an hourly run fits easily. If you
+sync many repositories or more often, create a fine-grained token with no permissions and add it as shown above.
 
-Disk space: one version of every storytold app for all three architectures takes several GB. Use fewer
-architectures and/or `--keep 1` to use less.
+Disk space: every kept version of every package and architecture is stored. Use fewer architectures and/or
+`--keep 1` to use less.
 
 Clients:
 
 ```sh
-sudo curl -fsSLo /usr/share/keyrings/storytold-archive-keyring.gpg \
-  https://apt.example.org/storytold/storytold-archive-keyring.gpg
+sudo curl -fsSLo /usr/share/keyrings/solidcraft-archive-keyring.gpg \
+  https://apt.example.org/solidcraft/solidcraft-archive-keyring.gpg
 
-sudo tee /etc/apt/sources.list.d/storytold.sources <<EOF
+sudo tee /etc/apt/sources.list.d/solidcraft.sources <<EOF
 Types: deb
-URIs: https://apt.example.org/storytold
+URIs: https://apt.example.org/solidcraft
 Suites: stable
 Components: main
 Architectures: $(dpkg --print-architecture)
-Signed-By: /usr/share/keyrings/storytold-archive-keyring.gpg
+Signed-By: /usr/share/keyrings/solidcraft-archive-keyring.gpg
 EOF
 ```
 
-(and the same with `solidcraft` instead of `storytold`).
+(and the same with `lookout` instead of `solidcraft`).
 
 ## Zoom
 
@@ -254,7 +263,7 @@ See [zoom/README.md](zoom/README.md#self-hosted-repository).
 - These are unofficial repositories. You're trusting the vendors' downloads (checksums only show the file
   arrived intact; Zoom's packages are additionally signed by Zoom), and you trust the signing key of this
   repository.
-- The storytold and SolidCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
+- The SolidCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
   Ubuntu 22.04 / Debian 12 or newer). On older systems apt will refuse to install them.
 - Lookout needs GTK 4.14, libadwaita 1.5 and WebKitGTK 6.0, i.e. Ubuntu 24.04 / Debian 13 or newer.
 - A newer version that is still marked as a prerelease on GitHub (e.g. SolidCraft's nightlies) isn't picked up.
