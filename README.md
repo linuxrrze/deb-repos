@@ -7,6 +7,7 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | `zoom`       | the [Zoom](https://zoom.us) desktop client (`zoom`)          | amd64                  | `cdn.zoom.us`          |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
 | `lookout`    | [Lookout](https://github.com/gavindi/lookout), a GNOME mail, calendar and contacts client (`lookout`) | amd64 | its GitHub releases |
+| `mailcraft`  | [MailCraft](https://github.com/UCS-Care-Group/mailcraft), mail, calendar and contacts for Microsoft 365, Outlook.com and IMAP; early alpha (`mailcraft`) | amd64, arm64 | its GitHub releases |
 
 GitHub Actions builds the signed indexes and publishes them on GitHub Pages, one directory per repository.
 The `.deb` files are **not** copied: apt downloads them directly from where the vendor publishes them.
@@ -37,7 +38,7 @@ sudo curl -fsSLo /etc/apt/keyrings/deb-repos.asc https://linuxrrze.github.io/deb
 
 Check the key before trusting it: `gpg --show-keys /etc/apt/keyrings/deb-repos.asc`.
 
-Then add the repositories you want. For each, replace `<repo>` with `zoom`, `solidcraft` or `lookout`:
+Then add the repositories you want. For each, replace `<repo>` with `zoom`, `solidcraft`, `lookout` or `mailcraft`:
 
 ```sh
 sudo tee /etc/apt/sources.list.d/<repo>.sources <<EOF
@@ -57,11 +58,12 @@ sudo apt update
 sudo apt install zoom                                # zoom
 sudo apt install solidcraft                          # solidcraft
 sudo apt install lookout                             # lookout
+sudo apt install mailcraft                           # mailcraft
 ```
 
 A package that was installed by hand from a downloaded `.deb` has the same name, so `apt upgrade` (or
 unattended-upgrades) now keeps it up to date. The Origins for unattended-upgrades are `zoom-ubuntu-repo`,
-`solidcraft-mirror` and `lookout-mirror`.
+`solidcraft-mirror`, `lookout-mirror` and `mailcraft-mirror`.
 
 ## Older versions
 
@@ -76,6 +78,7 @@ sudo apt-mark hold solidcraft            # keep it from being upgraded (undo wit
 - `zoom`: the 10 newest Zoom versions when the repository started, plus every release since.
 - `solidcraft`: the last 10 versions.
 - `lookout`: the last 5 versions.
+- `mailcraft`: the last 5 versions.
 
 ## Removal
 
@@ -93,7 +96,8 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
   zoom/  stanzas, versions.txt  ──▶  zoom/scripts/add-new-versions.sh ──▶   deb-repos.asc
   solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      zoom/        mirrors.txt, dists/stable/...
   lookout/state/debs.json            github-apt-mirror.py (lookout)         solidcraft/  mirrors.txt, dists/stable/...
-                               ◀──   commit new index entries              lookout/     mirrors.txt, dists/stable/...
+  mailcraft/state/debs.json          github-apt-mirror.py (mailcraft)       lookout/     mirrors.txt, dists/stable/...
+                               ◀──   commit new index entries              mailcraft/   mirrors.txt, dists/stable/...
 ```
 
 - Each `mirrors.txt` is a list for apt's `mirror+` method: index files are fetched from GitHub Pages
@@ -115,7 +119,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 
 ## GitHub releases: `github-apt-mirror.py`
 
-`solidcraft` and `lookout` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
+`solidcraft`, `lookout` and `mailcraft` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
 
 1. looks at the **latest stable release** (or the newest `--releases N`) of every non-archived repo, pushed to
    within the last year, that has `.deb` assets (prereleases and drafts are ignored),
@@ -129,7 +133,8 @@ The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<ar
 
 `solidcraft` is indexed with `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
 only looking at the latest one every 3 hours could miss some. `lookout` uses
-`--org gavindi --repos lookout --releases 5 --keep 5`.
+`--org gavindi --repos lookout --releases 5 --keep 5`, `mailcraft`
+`--org UCS-Care-Group --repos mailcraft --releases 5 --keep 5`.
 
 To add another project that publishes `.deb` files with its GitHub releases, add a step like the `solidcraft`
 one to the workflow, its `<name>/state/debs.json` to the `git add` line and the path triggers, and the name to
@@ -263,9 +268,11 @@ See [zoom/README.md](zoom/README.md#self-hosted-repository).
 - These are unofficial repositories. You're trusting the vendors' downloads (checksums only show the file
   arrived intact; Zoom's packages are additionally signed by Zoom), and you trust the signing key of this
   repository.
-- The SolidCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
+- The SolidCraft and MailCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
   Ubuntu 22.04 / Debian 12 or newer). On older systems apt will refuse to install them.
 - Lookout needs GTK 4.14, libadwaita 1.5 and WebKitGTK 6.0, i.e. Ubuntu 24.04 / Debian 13 or newer.
+- MailCraft is an early alpha. Installed from a `.deb` it doesn't update itself, it only says when a new
+  version is out; apt installs it.
 - A newer version that is still marked as a prerelease on GitHub (e.g. SolidCraft's nightlies) isn't picked up.
 - If a release or asset is deleted upstream, its version stays in the index until it's pruned, but can't be
   installed anymore.
