@@ -1,1 +1,37 @@
-{}
+{
+ "gavindi/lookout/releases/download/0.9.231/lookout_0.9.231-1_amd64.deb": {
+  "control": "Package: lookout\nVersion: 0.9.231-1\nArchitecture: amd64\nHomepage: https://lookout-mail.com/\nSection: mail\nPriority: optional\nMaintainer: Gavin Graham <gavindi@users.noreply.github.com>\nInstalled-Size: 35447\nDepends: libadwaita-1-0 (>= 1.5), libglib2.0-0, libgtk-4-1 (>= 4.14), libwebkitgtk-6.0-4\nDescription: Native GNOME mail client built on GNOME Online Accounts",
+  "md5": "d97df0d964b93fe26f5b419ab0a575ef",
+  "sha1": "11a9a50c74b461e7da04cd39691b3e16e1d849b0",
+  "sha256": "1690f5deceab4ac572f3ce1d29c64417e5b161d94be0eda61e067745688aa73e",
+  "size": 10565420
+ },
+ "gavindi/lookout/releases/download/0.9.241/lookout_0.9.241-1_amd64.deb": {
+  "control": "Package: lookout\nVersion: 0.9.241-1\nArchitecture: amd64\nHomepage: https://lookout-mail.com/\nSection: mail\nPriority: optional\nMaintainer: Gavin Graham <gavindi@users.noreply.github.com>\nInstalled-Size: 36427\nDepends: libadwaita-1-0 (>= 1.5), libglib2.0-0, libgtk-4-1 (>= 4.14), libwebkitgtk-6.0-4\nDescription: Native GNOME mail client built on GNOME Online Accounts",
+  "md5": "9a7eb954c50eaa5294864ca08734681b",
+  "sha1": "35de861c8efba1a74c8fbe9a51214c56c56d18ee",
+  "sha256": "eb624c8a34fee27c1eba204cdbdea3e8d69c0952144dd94a05674191955bc923",
+  "size": 10845376
+ },
+ "gavindi/lookout/releases/download/0.9.291/lookout_0.9.291-1_amd64.deb": {
+  "control": "Package: lookout\nVersion: 0.9.291-1\nArchitecture: amd64\nHomepage: https://lookout-mail.com/\nSection: mail\nPriority: optional\nMaintainer: Gavin Graham <gavindi@users.noreply.github.com>\nInstalled-Size: 39971\nDepends: libadwaita-1-0 (>= 1.5), libglib2.0-0, libgtk-4-1 (>= 4.14), libwebkitgtk-6.0-4\nRecommends: evolution-data-server\nDescription: Native GNOME mail client built on GNOME Online Accounts",
+  "md5": "726a164b28d072c4d5477c42286cadd0",
+  "sha1": "2b97cb241bef9ad6dcd58ea3bdb0bffffca9e802",
+  "sha256": "85084cf0750706b9aa0057abe3134d7d3584e04e1a877aec1b4eb1fd3d4b63aa",
+  "size": 11657128
+ },
+ "gavindi/lookout/releases/download/0.9.310/lookout_0.9.310-1_amd64.deb": {
+  "control": "Package: lookout\nVersion: 0.9.310-1\nArchitecture: amd64\nHomepage: https://lookout-mail.com/\nSection: mail\nPriority: optional\nMaintainer: Gavin Graham <gavindi@users.noreply.github.com>\nInstalled-Size: 41008\nDepends: libadwaita-1-0 (>= 1.5), libglib2.0-0, libgtk-4-1 (>= 4.14), libwebkitgtk-6.0-4\nRecommends: evolution-data-server\nDescription: Native GNOME mail client built on GNOME Online Accounts",
+  "md5": "36b0a6404c1f5770976630ea23b3aca1",
+  "sha1": "a934f9507b4f7c770c88d67c9ba06da8adb83070",
+  "sha256": "00c52bb5e5d85f88e059712867579abcdeaf4e663e50be93269a39117598e490",
+  "size": 11937780
+ },
+ "gavindi/lookout/releases/download/0.9.321/lookout_0.9.321-1_amd64.deb": {
+  "control": "Package: lookout\nVersion: 0.9.321-1\nArchitecture: amd64\nHomepage: https://lookout-mail.com/\nSection: mail\nPriority: optional\nMaintainer: Gavin Graham <gavindi@users.noreply.github.com>\nInstalled-Size: 41264\nDepends: libadwaita-1-0 (>= 1.5), libglib2.0-0, libgtk-4-1 (>= 4.14), libwebkitgtk-6.0-4\nRecommends: evolution-data-server\nDescription: Native GNOME mail client built on GNOME Online Accounts",
+  "md5": "f3ef73cb14e15189d3283d2f3c1022e9",
+  "sha1": "3966f8eb6bdcbf181ec318ead03c70913d1dccd4",
+  "sha256": "fa750d01f45c87ef6bb14c6d55ac80c6aec2d4f095b1ccf7dd50d88243b2e73c",
+  "size": 12012912
+ }
+}
