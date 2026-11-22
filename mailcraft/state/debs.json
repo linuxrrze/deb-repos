@@ -1,18 +1,4 @@
 {
- "UCS-Care-Group/mailcraft/releases/download/v0.11.0/mailcraft-0.11.0-linux-aarch64.deb": {
-  "control": "Package: mailcraft\nVersion: 0.11.0-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: MailCraft maintainers <systems@ucscaregroup.co.uk>\nInstalled-Size: 67712\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, xdg-utils\nSuggests: gnome-keyring\nHomepage: https://github.com/UCS-Care-Group/mailcraft\nDescription: Open-source, native mail, calendar, contacts and tasks program that works the way Outlook users expect.\n Mail with folders, rules, flags and categories; a calendar with recurring\n events; contacts and tasks. Talks to IMAP and SMTP servers and reads and writes\n .eml, .mbox, .ics and .vcf. Includes mailcraft-cli, a headless importer,\n exporter and command runner.",
-  "md5": "69fe3bed0eee214daf534718d96f6b1f",
-  "sha1": "cabb10ed4996ea7baf8774f836f62d770feb956c",
-  "sha256": "2cf10915c6cca407be77b9c33deb6f427c2b730f74499bd2a1bf17e1be369ca4",
-  "size": 30425248
- },
- "UCS-Care-Group/mailcraft/releases/download/v0.11.0/mailcraft-0.11.0-linux-x86_64.deb": {
-  "control": "Package: mailcraft\nVersion: 0.11.0-1\nSection: mail\nPriority: optional\nArchitecture: amd64\nMaintainer: MailCraft maintainers <systems@ucscaregroup.co.uk>\nInstalled-Size: 76446\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, xdg-utils\nSuggests: gnome-keyring\nHomepage: https://github.com/UCS-Care-Group/mailcraft\nDescription: Open-source, native mail, calendar, contacts and tasks program that works the way Outlook users expect.\n Mail with folders, rules, flags and categories; a calendar with recurring\n events; contacts and tasks. Talks to IMAP and SMTP servers and reads and writes\n .eml, .mbox, .ics and .vcf. Includes mailcraft-cli, a headless importer,\n exporter and command runner.",
-  "md5": "44e3f2c85bfd7aa9ca8455f7b7757e2b",
-  "sha1": "1bba0b2bb6981c6ce34808aa097d9177edeaa4eb",
-  "sha256": "8f0e642822a6c3e6d17889d090b1adddc500366e819cf54a2d1dd5ea6cbb1e28",
-  "size": 31709332
- },
  "UCS-Care-Group/mailcraft/releases/download/v0.11.1/mailcraft-0.11.1-linux-aarch64.deb": {
   "control": "Package: mailcraft\nVersion: 0.11.1-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: MailCraft maintainers <systems@ucscaregroup.co.uk>\nInstalled-Size: 66636\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, xdg-utils\nSuggests: gnome-keyring\nHomepage: https://github.com/UCS-Care-Group/mailcraft\nDescription: Open-source, native mail, calendar, contacts and tasks program that works the way Outlook users expect.\n Mail with folders, rules, flags and categories; a calendar with recurring\n events; contacts and tasks. Talks to IMAP and SMTP servers and reads and writes\n .eml, .mbox, .ics and .vcf. Includes mailcraft-cli, a headless importer,\n exporter and command runner.",
   "md5": "31b034c279267cfe487e53ef5c23bdf0",
@@ -68,5 +54,19 @@
   "sha1": "7b440659b7ca0ef63413f1601271e4af8651d60a",
   "sha256": "eb0850b9bdbeecada06412fd2c8ac12cff0723c14369d3186a873232f4bd5430",
   "size": 40951756
+ },
+ "UCS-Care-Group/mailcraft/releases/download/v0.15.0/mailcraft-0.15.0-linux-aarch64.deb": {
+  "control": "Package: mailcraft\nVersion: 0.15.0-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: MailCraft maintainers <systems@ucscaregroup.co.uk>\nInstalled-Size: 97696\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, xdg-utils\nSuggests: gnome-keyring\nHomepage: https://github.com/UCS-Care-Group/mailcraft\nDescription: Open-source, native mail, calendar, contacts and tasks program that works the way Outlook users expect.\n Mail with folders, rules, flags and categories; a calendar with recurring\n events; contacts and tasks. Talks to IMAP and SMTP servers and reads and writes\n .eml, .mbox, .ics and .vcf. Includes mailcraft-cli, a headless importer,\n exporter and command runner.",
+  "md5": "06bee38bb092ca9641d0513ddf7cd74a",
+  "sha1": "0f86cf672efbd1a9789a645f22c4f1c4e3255175",
+  "sha256": "74c5cdfef7f24426caed065ae0edefc377c6ae3ee7c8828208389bc54a638ff3",
+  "size": 40418216
+ },
+ "UCS-Care-Group/mailcraft/releases/download/v0.15.0/mailcraft-0.15.0-linux-x86_64.deb": {
+  "control": "Package: mailcraft\nVersion: 0.15.0-1\nSection: mail\nPriority: optional\nArchitecture: amd64\nMaintainer: MailCraft maintainers <systems@ucscaregroup.co.uk>\nInstalled-Size: 108905\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, xdg-utils\nSuggests: gnome-keyring\nHomepage: https://github.com/UCS-Care-Group/mailcraft\nDescription: Open-source, native mail, calendar, contacts and tasks program that works the way Outlook users expect.\n Mail with folders, rules, flags and categories; a calendar with recurring\n events; contacts and tasks. Talks to IMAP and SMTP servers and reads and writes\n .eml, .mbox, .ics and .vcf. Includes mailcraft-cli, a headless importer,\n exporter and command runner.",
+  "md5": "6960eca6f6f364e25eb134d4d37ef57a",
+  "sha1": "4ce5107aeabb3805f4e7d69a23b58ff3cbea0b83",
+  "sha256": "18cd6d3fe9ad6906e69bac91547c6515049e626d331f6e0cf9a9a7266ab1ee79",
+  "size": 42048578
  }
 }
