@@ -25,7 +25,27 @@ sudo curl -fsSLo /etc/apt/sources.list.d/artcraft.sources https://getartcraft.co
 sudo apt update
 ```
 
-ArtCraft Studio is called `artcraft` there (it was `art-craft` here); the other packages keep their names.
+The packages keep their names, except ArtCraft Studio, which is listed as `artcraft` there (it was `art-craft`
+here).
+
+> [!WARNING]
+> The official repository currently makes apt reinstall every Craft app on every `apt upgrade`, even when there
+> is no new version ([storytold/artcraft-services#347](https://github.com/storytold/artcraft-services/issues/347)).
+> Its index lists different `Depends`, `Recommends` and `Installed-Size` than the `.deb` files contain, so apt
+> treats the installed package and the repository's as two versions with the same number
+> (`apt-cache policy <package>` lists the version twice). Until that is fixed, hold the Craft apps you have
+> installed, for example:
+>
+> ```sh
+> sudo apt-mark hold photocraft filmcraft wordcraft
+> ```
+>
+> A held package also doesn't get real updates: check with `apt list --upgradable -a` and `sudo apt-mark unhold`
+> it to upgrade.
+>
+> `artcraft` is affected differently: its `.deb` is still the old package, so `apt install artcraft` installs
+> `art-craft` 0.41.1, and apt never sees `artcraft` as installed. If you have `art-craft` from here, keep it
+> until this is fixed. apt doesn't touch it, but it gets no updates either.
 
 # Installation
 
