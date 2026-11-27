@@ -112,7 +112,7 @@ jobs:
         run: |
           # Look at the newest 5 releases, in case several come out between runs
           result=0
-          ./github-apt-mirror.py --org UCS-Care-Group --repos mailcraft --name mailcraft \
+          ./github-apt-mirror.py --org ZIDAN44 --repos mailcraft --name mailcraft \
               --releases 5 --keep 5 \
               --out public/mailcraft --state mailcraft/state \
               --remote-debs "${{ steps.pages.outputs.base_url }}/mailcraft/" --gpg-key "$KEY_ID" \
