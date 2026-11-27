@@ -5,6 +5,7 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | Repository   | Packages                                                     | Architectures          | .deb files served from |
 |--------------|--------------------------------------------------------------|------------------------|------------------------|
 | `zoom`       | the [Zoom](https://zoom.us) desktop client (`zoom`)          | amd64                  | `cdn.zoom.us`          |
+| `storytold`  | the [storytold](https://github.com/storytold) "Craft" apps (`photocraft`, `filmcraft`, `wordcraft`, …), until their [official repository](https://getartcraft.com/linux) is fixed | amd64, arm64, riscv64 | their GitHub releases |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
 | `lookout`    | [Lookout](https://github.com/gavindi/lookout), a GNOME mail, calendar and contacts client (`lookout`) | amd64 | its GitHub releases |
 | `mailcraft`  | [MailCraft](https://github.com/ZIDAN44/mailcraft), a local-first IMAP/SMTP mail client (`mailcraft`) | amd64, arm64, riscv64 | its GitHub releases |
@@ -20,39 +21,24 @@ All repositories are signed with the same key.
 > version numbers are higher, so `apt upgrade` replaces an installed UCS-Care-Group MailCraft with ZIDAN44's.
 > To keep the old one, run `sudo apt-mark hold mailcraft` before the next upgrade, or remove the repository.
 
-The storytold / ArtCraft "Craft" apps used to be mirrored here as `storytold`. They have an official APT
-repository with the same packages (amd64, arm64, riscv64), see <https://getartcraft.com/linux>. If you used
-`storytold` from here, switch to it:
-
-```sh
-sudo rm /etc/apt/sources.list.d/storytold.sources
-sudo curl -fsSLo /etc/apt/keyrings/artcraft.gpg https://getartcraft.com/keys/artcraft.gpg
-sudo chmod 644 /etc/apt/keyrings/artcraft.gpg
-sudo curl -fsSLo /etc/apt/sources.list.d/artcraft.sources https://getartcraft.com/apt/artcraft.sources
-sudo apt update
-```
-
-The packages keep their names, except ArtCraft Studio, which is listed as `artcraft` there (it was `art-craft`
-here).
-
 > [!WARNING]
-> The official repository currently makes apt reinstall every Craft app on every `apt upgrade`, even when there
-> is no new version ([storytold/artcraft-services#347](https://github.com/storytold/artcraft-services/issues/347)).
-> Its index lists different `Depends`, `Recommends` and `Installed-Size` than the `.deb` files contain, so apt
-> treats the installed package and the repository's as two versions with the same number
-> (`apt-cache policy <package>` lists the version twice). Until that is fixed, hold the Craft apps you have
-> installed, for example:
+> The storytold / ArtCraft "Craft" apps have an official APT repository (<https://getartcraft.com/linux>), but
+> it currently makes apt reinstall every Craft app on every `apt upgrade`, even when there is no new version
+> ([storytold/artcraft-services#347](https://github.com/storytold/artcraft-services/issues/347)): its index lists
+> different `Depends`, `Recommends` and `Installed-Size` than the `.deb` files contain, so apt treats the
+> installed package and the repository's as two versions with the same number. Its `artcraft` package also
+> still installs the old `art-craft`. Until that is fixed, `storytold` is mirrored here again; it is removed
+> once the official repository works.
+>
+> Use only one of the two: with both, apt sees the same versions twice and the reinstalls continue. To switch
+> from the official repository to `storytold` (add it as shown under [Installation](#installation)):
 >
 > ```sh
-> sudo apt-mark hold photocraft filmcraft wordcraft
+> sudo rm /etc/apt/sources.list.d/artcraft.sources
+> sudo apt-mark unhold photocraft filmcraft wordcraft   # the Craft apps you held, if any
 > ```
 >
-> A held package also doesn't get real updates: check with `apt list --upgradable -a` and `sudo apt-mark unhold`
-> it to upgrade.
->
-> `artcraft` is affected differently: its `.deb` is still the old package, so `apt install artcraft` installs
-> `art-craft` 0.41.1, and apt never sees `artcraft` as installed. If you have `art-craft` from here, keep it
-> until this is fixed. apt doesn't touch it, but it gets no updates either.
+> ArtCraft Studio is called `art-craft` here.
 
 # Installation
 
@@ -65,7 +51,7 @@ sudo curl -fsSLo /etc/apt/keyrings/deb-repos.asc https://linuxrrze.github.io/deb
 
 Check the key before trusting it: `gpg --show-keys /etc/apt/keyrings/deb-repos.asc`.
 
-Then add the repositories you want. For each, replace `<repo>` with `zoom`, `solidcraft`, `lookout` or `mailcraft`:
+Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold`, `solidcraft`, `lookout` or `mailcraft`:
 
 ```sh
 sudo tee /etc/apt/sources.list.d/<repo>.sources <<EOF
@@ -83,6 +69,7 @@ and install:
 ```sh
 sudo apt update
 sudo apt install zoom                                # zoom
+sudo apt install photocraft filmcraft wordcraft      # storytold; `apt search craft` lists them all
 sudo apt install solidcraft                          # solidcraft
 sudo apt install lookout                             # lookout
 sudo apt install mailcraft                           # mailcraft
@@ -90,7 +77,7 @@ sudo apt install mailcraft                           # mailcraft
 
 A package that was installed by hand from a downloaded `.deb` has the same name, so `apt upgrade` (or
 unattended-upgrades) now keeps it up to date. The Origins for unattended-upgrades are `zoom-ubuntu-repo`,
-`solidcraft-mirror`, `lookout-mirror` and `mailcraft-mirror`.
+`storytold-mirror`, `solidcraft-mirror`, `lookout-mirror` and `mailcraft-mirror`.
 
 ## Older versions
 
@@ -103,6 +90,7 @@ sudo apt-mark hold solidcraft            # keep it from being upgraded (undo wit
 ```
 
 - `zoom`: the 10 newest Zoom versions when the repository started, plus every release since.
+- `storytold`: the last 5 versions of each app.
 - `solidcraft`: the last 10 versions.
 - `lookout`: the last 5 versions.
 - `mailcraft`: the last 5 versions.
@@ -121,7 +109,8 @@ sudo apt update
 ```
 github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub Pages: linuxrrze.github.io/deb-repos/
   zoom/  stanzas, versions.txt  ──▶  zoom/scripts/add-new-versions.sh ──▶   deb-repos.asc
-  solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      zoom/        mirrors.txt, dists/stable/...
+  storytold/state/debs.json          github-apt-mirror.py (storytold)       zoom/        mirrors.txt, dists/stable/...
+  solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      storytold/   mirrors.txt, dists/stable/...
   lookout/state/debs.json            github-apt-mirror.py (lookout)         solidcraft/  mirrors.txt, dists/stable/...
   mailcraft/state/debs.json          github-apt-mirror.py (mailcraft)       lookout/     mirrors.txt, dists/stable/...
                                ◀──   commit new index entries              mailcraft/   mirrors.txt, dists/stable/...
@@ -146,7 +135,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 
 ## GitHub releases: `github-apt-mirror.py`
 
-`solidcraft`, `lookout` and `mailcraft` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
+`storytold`, `solidcraft`, `lookout` and `mailcraft` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
 
 1. looks at the **latest stable release** (or the newest `--releases N`) of every non-archived repo, pushed to
    within the last year, that has `.deb` assets (prereleases and drafts are ignored),
@@ -158,7 +147,8 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<arch>.deb`) map `x86_64` →
 `amd64`, `aarch64` → `arm64` and `riscv64` → `riscv64`.
 
-`solidcraft` is indexed with `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
+`storytold` is indexed with `--org storytold --keep 5`, which finds all of its apps, `solidcraft` with
+`--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
 only looking at the latest one every 3 hours could miss some. `lookout` uses
 `--org gavindi --repos lookout --releases 5 --keep 5`, `mailcraft`
 `--org ZIDAN44 --repos mailcraft --releases 5 --keep 5`.
@@ -295,7 +285,7 @@ See [zoom/README.md](zoom/README.md#self-hosted-repository).
 - These are unofficial repositories. You're trusting the vendors' downloads (checksums only show the file
   arrived intact; Zoom's packages are additionally signed by Zoom), and you trust the signing key of this
   repository.
-- The SolidCraft and MailCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
+- The storytold, SolidCraft and MailCraft packages' `Depends` fields target recent distros (e.g. `libc6 >= 2.35`, i.e.
   Ubuntu 22.04 / Debian 12 or newer). On older systems apt will refuse to install them.
 - Lookout needs GTK 4.14, libadwaita 1.5 and WebKitGTK 6.0, i.e. Ubuntu 24.04 / Debian 13 or newer.
 - A newer version that is still marked as a prerelease on GitHub (e.g. SolidCraft's nightlies) isn't picked up.
