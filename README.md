@@ -8,18 +8,29 @@ Unofficial APT repositories for software that ships `.deb` files but has no APT 
 | `storytold`  | the [storytold](https://github.com/storytold) "Craft" apps (`photocraft`, `filmcraft`, `wordcraft`, …), until their [official repository](https://getartcraft.com/linux) is fixed | amd64, arm64, riscv64 | their GitHub releases |
 | `solidcraft` | [SolidCraft](https://github.com/tangency-labs/solidcraft), parametric 3D CAD (`solidcraft`) | amd64, arm64 | its GitHub releases |
 | `lookout`    | [Lookout](https://github.com/gavindi/lookout), a GNOME mail, calendar and contacts client (`lookout`) | amd64 | its GitHub releases |
-| `mailcraft`  | [MailCraft](https://github.com/ZIDAN44/mailcraft), a local-first IMAP/SMTP mail client (`mailcraft`) | amd64, arm64, riscv64 | its GitHub releases |
+| `mailcraft`  | [MailCraft](https://github.com/UCSLabs/mailcraft), mail, calendar and contacts for Microsoft 365, Outlook.com and IMAP (`mailcraft`) | amd64, arm64 | its GitHub releases |
+| `mailcraft-zidan` | [MailCraft](https://github.com/ZIDAN44/mailcraft) by ZIDAN44, a different local-first IMAP/SMTP mail client of the same name (`mailcraft`) | amd64, arm64, riscv64 | its GitHub releases |
 
 GitHub Actions builds the signed indexes and publishes them on GitHub Pages, one directory per repository.
 The `.deb` files are **not** copied: apt downloads them directly from where the vendor publishes them.
 All repositories are signed with the same key.
 
 > [!NOTE]
-> Until November 27, 2026, `mailcraft` mirrored a different project of the same name,
-> [UCS-Care-Group/mailcraft](https://github.com/UCS-Care-Group/mailcraft) (versions up to 0.15.0). It now mirrors
-> [ZIDAN44/mailcraft](https://github.com/ZIDAN44/mailcraft). Both packages are called `mailcraft` and ZIDAN44's
-> version numbers are higher, so `apt upgrade` replaces an installed UCS-Care-Group MailCraft with ZIDAN44's.
-> To keep the old one, run `sudo apt-mark hold mailcraft` before the next upgrade, or remove the repository.
+> `mailcraft` and `mailcraft-zidan` are two unrelated programs that both install a package called `mailcraft`.
+> Add only one of the two repositories: with both, apt installs whichever has the higher version number
+> (currently ZIDAN44's).
+>
+> On November 27, 2026, `mailcraft` briefly mirrored ZIDAN44's MailCraft instead of
+> [UCSLabs/mailcraft](https://github.com/UCSLabs/mailcraft) (formerly UCS-Care-Group/mailcraft); that one is now
+> `mailcraft-zidan`. If `apt upgrade` replaced your MailCraft with ZIDAN44's 0.38 or later during that time,
+> apt won't go back to the lower UCSLabs version by itself:
+>
+> ```sh
+> apt list -a mailcraft                                  # pick the newest UCSLabs version, e.g. 0.15.0-1
+> sudo apt install --allow-downgrades mailcraft=0.15.0-1
+> ```
+>
+> If you want to keep ZIDAN44's MailCraft, replace the `mailcraft` repository with `mailcraft-zidan`.
 
 > [!WARNING]
 > The storytold / ArtCraft "Craft" apps have an official APT repository (<https://getartcraft.com/linux>), but
@@ -51,7 +62,7 @@ sudo curl -fsSLo /etc/apt/keyrings/deb-repos.asc https://linuxrrze.github.io/deb
 
 Check the key before trusting it: `gpg --show-keys /etc/apt/keyrings/deb-repos.asc`.
 
-Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold`, `solidcraft`, `lookout` or `mailcraft`:
+Then add the repositories you want. For each, replace `<repo>` with `zoom`, `storytold`, `solidcraft`, `lookout`, `mailcraft` or `mailcraft-zidan`:
 
 ```sh
 sudo tee /etc/apt/sources.list.d/<repo>.sources <<EOF
@@ -72,12 +83,12 @@ sudo apt install zoom                                # zoom
 sudo apt install photocraft filmcraft wordcraft      # storytold; `apt search craft` lists them all
 sudo apt install solidcraft                          # solidcraft
 sudo apt install lookout                             # lookout
-sudo apt install mailcraft                           # mailcraft
+sudo apt install mailcraft                           # mailcraft or mailcraft-zidan
 ```
 
 A package that was installed by hand from a downloaded `.deb` has the same name, so `apt upgrade` (or
 unattended-upgrades) now keeps it up to date. The Origins for unattended-upgrades are `zoom-ubuntu-repo`,
-`storytold-mirror`, `solidcraft-mirror`, `lookout-mirror` and `mailcraft-mirror`.
+`storytold-mirror`, `solidcraft-mirror`, `lookout-mirror`, `mailcraft-mirror` and `mailcraft-zidan-mirror`.
 
 ## Older versions
 
@@ -94,6 +105,7 @@ sudo apt-mark hold solidcraft            # keep it from being upgraded (undo wit
 - `solidcraft`: the last 10 versions.
 - `lookout`: the last 5 versions.
 - `mailcraft`: the last 5 versions.
+- `mailcraft-zidan`: the last 5 versions.
 
 ## Removal
 
@@ -113,7 +125,8 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
   solidcraft/state/debs.json         github-apt-mirror.py (solidcraft)      storytold/   mirrors.txt, dists/stable/...
   lookout/state/debs.json            github-apt-mirror.py (lookout)         solidcraft/  mirrors.txt, dists/stable/...
   mailcraft/state/debs.json          github-apt-mirror.py (mailcraft)       lookout/     mirrors.txt, dists/stable/...
-                               ◀──   commit new index entries              mailcraft/   mirrors.txt, dists/stable/...
+  mailcraft-zidan/state/debs.json    github-apt-mirror.py (mailcraft-zidan) mailcraft/   mirrors.txt, dists/stable/...
+                               ◀──   commit new index entries              mailcraft-zidan/ mirrors.txt, dists/stable/...
 ```
 
 - Each `mirrors.txt` is a list for apt's `mirror+` method: index files are fetched from GitHub Pages
@@ -135,7 +148,7 @@ github.com/linuxrrze/deb-repos      GitHub Actions, every 3 hours        GitHub 
 
 ## GitHub releases: `github-apt-mirror.py`
 
-`storytold`, `solidcraft`, `lookout` and `mailcraft` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
+`storytold`, `solidcraft`, `lookout`, `mailcraft` and `mailcraft-zidan` are built by `github-apt-mirror.py`. For the given org (or some of its repos), it
 
 1. looks at the **latest stable release** (or the newest `--releases N`) of every non-archived repo, pushed to
    within the last year, that has `.deb` assets (prereleases and drafts are ignored),
@@ -151,7 +164,8 @@ The release file names (`app-1.0-linux-<arch>.deb`, or Debian style `app_1.0_<ar
 `--org tangency-labs --repos solidcraft --releases 10`, because SolidCraft publishes several releases a day and
 only looking at the latest one every 3 hours could miss some. `lookout` uses
 `--org gavindi --repos lookout --releases 5 --keep 5`, `mailcraft`
-`--org ZIDAN44 --repos mailcraft --releases 5 --keep 5`.
+`--org UCSLabs --repos mailcraft --releases 5 --keep 5` and `mailcraft-zidan`
+`--org ZIDAN44 --repos mailcraft --name mailcraft-zidan --releases 5 --keep 5`.
 
 To add another project that publishes `.deb` files with its GitHub releases, add a step like the `solidcraft`
 one to the workflow, its `<name>/state/debs.json` to the `git add` line and the path triggers, and the name to
