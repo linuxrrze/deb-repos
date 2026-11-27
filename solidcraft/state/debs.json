@@ -1,18 +1,4 @@
 {
- "tangency-labs/solidcraft/releases/download/v0.44.0/solidcraft-0.44.0-linux-aarch64.deb": {
-  "control": "Package: solidcraft\nVersion: 0.44.0-1\nSection: graphics\nPriority: optional\nArchitecture: arm64\nMaintainer: SolidCraft contributors <https://github.com/bherbruck/solidcraft>\nInstalled-Size: 403469\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal\nHomepage: https://docs.solidcraft.io/\nDescription: Open-source, independent parametric 3D CAD\n Sketches with a constraint solver, a parametric feature timeline, components and\n joints, sheet metal; STEP, IGES, 3MF, STL and OBJ. Includes solidcraft-cli, a\n headless command runner and MCP server for AI agents.",
-  "md5": "a065ba12a3c1678334caa97fff5c56dc",
-  "sha1": "8e069ddf7e57532ad1bbdac48b9bd0fd205415a3",
-  "sha256": "52a844ef54827b646975c0c246850c5096559f66254e7ebd9718c300812d8d64",
-  "size": 170847080
- },
- "tangency-labs/solidcraft/releases/download/v0.44.0/solidcraft-0.44.0-linux-x86_64.deb": {
-  "control": "Package: solidcraft\nVersion: 0.44.0-1\nSection: graphics\nPriority: optional\nArchitecture: amd64\nMaintainer: SolidCraft contributors <https://github.com/bherbruck/solidcraft>\nInstalled-Size: 479252\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal\nHomepage: https://docs.solidcraft.io/\nDescription: Open-source, independent parametric 3D CAD\n Sketches with a constraint solver, a parametric feature timeline, components and\n joints, sheet metal; STEP, IGES, 3MF, STL and OBJ. Includes solidcraft-cli, a\n headless command runner and MCP server for AI agents.",
-  "md5": "060be0ba6b49abdff6e7beeae6f5c56a",
-  "sha1": "37e17c55e76a33228a824dd88fc5ede3492c156a",
-  "sha256": "bbb221879b12d68da5022fb9559940aa70ca4c3af5f268ab1c576b096a2eea75",
-  "size": 183107462
- },
  "tangency-labs/solidcraft/releases/download/v0.44.1/solidcraft-0.44.1-linux-aarch64.deb": {
   "control": "Package: solidcraft\nVersion: 0.44.1-1\nSection: graphics\nPriority: optional\nArchitecture: arm64\nMaintainer: SolidCraft contributors <https://github.com/bherbruck/solidcraft>\nInstalled-Size: 403625\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal\nHomepage: https://docs.solidcraft.io/\nDescription: Open-source, independent parametric 3D CAD\n Sketches with a constraint solver, a parametric feature timeline, components and\n joints, sheet metal; STEP, IGES, 3MF, STL and OBJ. Includes solidcraft-cli, a\n headless command runner and MCP server for AI agents.",
   "md5": "d2bfea214acf9bf626a7c11e8525fdd8",
@@ -138,5 +124,19 @@
   "sha1": "4965c05a046e213c4db31a97dbf3050e765b6a70",
   "sha256": "d236ecf13813b2d049716db0179ec2748fda057348eab3ea7d0c33308871714a",
   "size": 232518548
+ },
+ "tangency-labs/solidcraft/releases/download/v0.51.1/solidcraft-0.51.1-linux-aarch64.deb": {
+  "control": "Package: solidcraft\nVersion: 0.51.1-1\nSection: graphics\nPriority: optional\nArchitecture: arm64\nMaintainer: SolidCraft contributors <https://github.com/bherbruck/solidcraft>\nInstalled-Size: 522353\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal\nHomepage: https://docs.solidcraft.io/\nDescription: Open-source, independent parametric 3D CAD\n Sketches with a constraint solver, a parametric feature timeline, components and\n joints, sheet metal; STEP, IGES, 3MF, STL and OBJ. Includes solidcraft-cli, a\n headless command runner and MCP server for AI agents.",
+  "md5": "44d5e1faa2089439ebb72a006b11751b",
+  "sha1": "e582e8bcb01bad9b457e24d093729a28b14fed47",
+  "sha256": "cd93df5b74bb4cdf77ab6b2f65964d6a470aefb8ace8529b3ea25cc565572aaf",
+  "size": 225276774
+ },
+ "tangency-labs/solidcraft/releases/download/v0.51.1/solidcraft-0.51.1-linux-x86_64.deb": {
+  "control": "Package: solidcraft\nVersion: 0.51.1-1\nSection: graphics\nPriority: optional\nArchitecture: amd64\nMaintainer: SolidCraft contributors <https://github.com/bherbruck/solidcraft>\nInstalled-Size: 623020\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal\nHomepage: https://docs.solidcraft.io/\nDescription: Open-source, independent parametric 3D CAD\n Sketches with a constraint solver, a parametric feature timeline, components and\n joints, sheet metal; STEP, IGES, 3MF, STL and OBJ. Includes solidcraft-cli, a\n headless command runner and MCP server for AI agents.",
+  "md5": "ebf215523ee572ec2d9934fc87e76879",
+  "sha1": "184ef8535574608c09fdef9c6dd6b13e7d43a3f1",
+  "sha256": "6a9632eceb4a9caa9a3d72225c2a2a72216a48a2f6d4128c40050872e9f114fc",
+  "size": 241495156
  }
 }
