@@ -1,25 +1,4 @@
 {
- "ZIDAN44/mailcraft/releases/download/v0.38.0/mailcraft-0.38.0-linux-aarch64.deb": {
-  "control": "Package: mailcraft\nVersion: 0.38.0-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 135551\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
-  "md5": "3901764d198a7184e41d6c581742d592",
-  "sha1": "1835bad8d140256ba93001ef1c21462cd6de8ead",
-  "sha256": "025c0bffdba3cbc8e76af101fd7fd2cab086556cfa6e56ef07864a04d04ced73",
-  "size": 70910954
- },
- "ZIDAN44/mailcraft/releases/download/v0.38.0/mailcraft-0.38.0-linux-riscv64.deb": {
-  "control": "Package: mailcraft\nVersion: 0.38.0-1\nSection: mail\nPriority: optional\nArchitecture: riscv64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 133183\nDepends: libc6 (>= 2.39), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
-  "md5": "3865bc9a745417d616c9047b4bca0cad",
-  "sha1": "e1bb055fa1cf9bb0417fe512d2043e1f6153970c",
-  "sha256": "88db142af4993a275cd2dbd8641e64f6284dd7003a937c2223be3225c0ebef5e",
-  "size": 72047042
- },
- "ZIDAN44/mailcraft/releases/download/v0.38.0/mailcraft-0.38.0-linux-x86_64.deb": {
-  "control": "Package: mailcraft\nVersion: 0.38.0-1\nSection: mail\nPriority: optional\nArchitecture: amd64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 148615\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
-  "md5": "e1af8057f6ae68a8ef71c4b54c881c54",
-  "sha1": "1e93eac95664f572dfd6462b7371d3227e977466",
-  "sha256": "d3d2d0df4f085bfbdcf2a432fffc0917c815fa1b40d27a5cafad4c8ea29b738c",
-  "size": 73435240
- },
  "ZIDAN44/mailcraft/releases/download/v0.39.0/mailcraft-0.39.0-linux-aarch64.deb": {
   "control": "Package: mailcraft\nVersion: 0.39.0-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 137611\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
   "md5": "fe986fb54353e276b9c56a493b5e449d",
@@ -103,5 +82,26 @@
   "sha1": "22d0d8d16ba89117220ddc8a287156b0f90d75ec",
   "sha256": "bc54bab13011fd0eb5f29d14f412702419a481f2da4d9896dd7777e5cb049d27",
   "size": 79520588
+ },
+ "ZIDAN44/mailcraft/releases/download/v0.43.0/mailcraft-0.43.0-linux-aarch64.deb": {
+  "control": "Package: mailcraft\nVersion: 0.43.0-1\nSection: mail\nPriority: optional\nArchitecture: arm64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 147590\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
+  "md5": "e1cde4f8feab81e562a6745309a4d67b",
+  "sha1": "30bbb833745fceba12697a6aa2942d53f13456eb",
+  "sha256": "4f6e6c4c802766739c8ada3748d8886fb97dc334fcaf7fd57e326266fbc14c02",
+  "size": 76490604
+ },
+ "ZIDAN44/mailcraft/releases/download/v0.43.0/mailcraft-0.43.0-linux-riscv64.deb": {
+  "control": "Package: mailcraft\nVersion: 0.43.0-1\nSection: mail\nPriority: optional\nArchitecture: riscv64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 145326\nDepends: libc6 (>= 2.39), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
+  "md5": "2d9190796e4de29cdfbf1b12f14cccf2",
+  "sha1": "99eca6e2d3aca805640c8c65f8b9139446e25809",
+  "sha256": "ecc7b85f6a6b3ef0853067664f50266821181fae7890ef432a64552384652c7e",
+  "size": 77888656
+ },
+ "ZIDAN44/mailcraft/releases/download/v0.43.0/mailcraft-0.43.0-linux-x86_64.deb": {
+  "control": "Package: mailcraft\nVersion: 0.43.0-1\nSection: mail\nPriority: optional\nArchitecture: amd64\nMaintainer: Zinadin Zidan <zidan.roking@gmail.com>\nInstalled-Size: 162578\nDepends: libc6 (>= 2.35), libgcc-s1, libxkbcommon0, libvulkan1 | libegl1\nRecommends: libwayland-client0, libx11-6, libx11-xcb1, libxkbcommon-x11-0, libxcursor1, libxi6, libxrandr2, mesa-vulkan-drivers, xdg-desktop-portal, gnome-keyring | kwalletmanager | keepassxc, xdg-utils\nHomepage: https://github.com/ZIDAN44/mailcraft\nDescription: Open-source, local-first email client with the familiar three-pane mail\n workflow over IMAP and SMTP: several accounts and a unified inbox, a\n date-grouped message list, reading pane, conversations, offline cache and\n search, drafts, attachments; passwords in the system keyring.\n Includes mailcraft-cli, a command-line client and command runner.",
+  "md5": "245837abf868532b92b538c2d5671dbe",
+  "sha1": "5b55e09a0c2190beaacc2ad0dc5e74b621666ef1",
+  "sha256": "7b313b24b405be3f0cab601e7f06f29a28fa137244401858cfadcc563a446d41",
+  "size": 79417628
  }
 }

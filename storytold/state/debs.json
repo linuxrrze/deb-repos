@@ -62,6 +62,27 @@
   "sha256": "8e0321581daa591fd812b6cecccaf06a56688b2c5a6c624cbd3fee6553f403a4",
   "size": 20183444
  },
+ "storytold/anicraft/releases/download/v0.3.0/anicraft-0.3.0-linux-aarch64.deb": {
+  "control": "Package: anicraft\nVersion: 0.3.0-1\nSection: graphics\nPriority: optional\nArchitecture: arm64\nMaintainer: AniCraft maintainers <anicraft@storyteller.ai>\nInstalled-Size: 72534\nDepends: libc6 (>= 2.35), libgcc-s1, libasound2 | libasound2t64, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal, pipewire-alsa | pulseaudio\nSuggests: ffmpeg\nHomepage: https://getartcraft.com/apps/anicraft\nDescription: Open-source, native 2D animation studio.\n Vector drawing tools, a layered timeline with keyframes and classic, shape\n and motion tweens, symbols and a library; opens FLA and XFL documents;\n exports PNG, GIF, SVG, sprite sheets, Lottie and (with ffmpeg) video.\n Includes anicraft-cli, a headless renderer, command runner and MCP server.",
+  "md5": "18012afff204dbc6740cf156b2dd8431",
+  "sha1": "cf109aff54c92eef4d8b8dbc1605d07d44ef77b2",
+  "sha256": "13d621cac4cf37fcf96159d3f27f0e77314fba208e6e80c2ee398d0c9f53f842",
+  "size": 35191256
+ },
+ "storytold/anicraft/releases/download/v0.3.0/anicraft-0.3.0-linux-riscv64.deb": {
+  "control": "Package: anicraft\nVersion: 0.3.0-1\nSection: graphics\nPriority: optional\nArchitecture: riscv64\nMaintainer: AniCraft maintainers <anicraft@storyteller.ai>\nInstalled-Size: 70706\nDepends: libc6 (>= 2.39), libgcc-s1, libasound2 | libasound2t64, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal, pipewire-alsa | pulseaudio\nSuggests: ffmpeg\nHomepage: https://getartcraft.com/apps/anicraft\nDescription: Open-source, native 2D animation studio.\n Vector drawing tools, a layered timeline with keyframes and classic, shape\n and motion tweens, symbols and a library; opens FLA and XFL documents;\n exports PNG, GIF, SVG, sprite sheets, Lottie and (with ffmpeg) video.\n Includes anicraft-cli, a headless renderer, command runner and MCP server.",
+  "md5": "2ffeb3b2b746e250e4b367812b50b352",
+  "sha1": "e4f55841b5fd891635e0b310e71cbed451020ab3",
+  "sha256": "043ba91f8498093994052220f0e1b572e87de134074408514d8f27c8300bc8f7",
+  "size": 35779236
+ },
+ "storytold/anicraft/releases/download/v0.3.0/anicraft-0.3.0-linux-x86_64.deb": {
+  "control": "Package: anicraft\nVersion: 0.3.0-1\nSection: graphics\nPriority: optional\nArchitecture: amd64\nMaintainer: AniCraft maintainers <anicraft@storyteller.ai>\nInstalled-Size: 82503\nDepends: libc6 (>= 2.35), libgcc-s1, libasound2 | libasound2t64, libxkbcommon0, libxkbcommon-x11-0, libwayland-client0, libx11-6, libx11-xcb1, libxcb1, libxcursor1, libxi6, libvulkan1 | libegl1\nRecommends: mesa-vulkan-drivers, libegl-mesa0, xdg-desktop-portal, pipewire-alsa | pulseaudio\nSuggests: ffmpeg\nHomepage: https://getartcraft.com/apps/anicraft\nDescription: Open-source, native 2D animation studio.\n Vector drawing tools, a layered timeline with keyframes and classic, shape\n and motion tweens, symbols and a library; opens FLA and XFL documents;\n exports PNG, GIF, SVG, sprite sheets, Lottie and (with ffmpeg) video.\n Includes anicraft-cli, a headless renderer, command runner and MCP server.",
+  "md5": "21b965887a66f71904beb23ad9a4fd42",
+  "sha1": "2d0c8ab86d87bb53e3ab41fb490c22693f93903b",
+  "sha256": "764c5950435a77f84322456edebbba76dd93e274bfce1e05e90a9ce247a28d08",
+  "size": 36592790
+ },
  "storytold/artcraft/releases/download/artcraft-v0.41.1/artcraft-0.41.1-linux-aarch64.deb": {
   "control": "Package: art-craft\nVersion: 0.41.1\nArchitecture: arm64\nInstalled-Size: 84346\nMaintainer: you\nPriority: optional\nDepends: libwebkit2gtk-4.1-0, libgtk-3-0\nDescription: AI image and video creation\n ArtCraft Studio is a desktop workspace for generating AI images and video.",
   "md5": "9956ed1fcc49c1f163fe04ac1dcc1e6a",
